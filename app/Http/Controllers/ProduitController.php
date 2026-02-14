@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Produit;
 use Illuminate\Http\Request;
 
 class ProduitController extends Controller
@@ -11,17 +12,22 @@ class ProduitController extends Controller
      */
     public function index()
     {
-        //
-        return view('produits.index');
+        // recuperer toutes les produit
+        $produits=Produit::all();
+        // dump and die poure debuguer le contenu d'une variable
+        // dd($produits);
+// on passe la data a notre view (page)
+        return view('produits.index',compact('produits'));
 
     }
-  
+
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         //
+        return view('produits.create');
     }
 
     /**
@@ -29,7 +35,21 @@ class ProduitController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // validation
+        $data=$request->validate([
+            'libelle'=>['required', 'string','max:12'],
+            'price'=>['required','numeric', 'min:0']
+
+        ]);
+        Produit::create($data);
+
+        //recuperer les donnees du formulair
+        // $data=$request->all();
+        // save les donnees dans la table Produit
+        // Produit::($data);
+        // retourne sur la page index
+        return redirect()->route('produits.index');
+
     }
 
     /**

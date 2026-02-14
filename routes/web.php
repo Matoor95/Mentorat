@@ -9,4 +9,6 @@ Route::get('/', function () {
 Route::get('/matar', function(){
     return 1+5;
 });
-Route::get('/produits/index',[ProduitController::class, 'index']);
+Route::get('/produits/index',[ProduitController::class, 'index'])->name('produits.index');
+Route::get('produits/create',[ProduitController::class,'create']);
+Route::post('produits',[ProduitController::class, 'store'])->name('produits.store');
