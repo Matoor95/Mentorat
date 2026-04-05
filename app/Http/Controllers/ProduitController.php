@@ -12,12 +12,13 @@ class ProduitController extends Controller
      */
     public function index()
     {
-        // recuperer toutes les produit
-        $produits=Produit::all();
+        // recuperer les 10 derniers produits ajoutes 
+        $produits = Produit::latest()->paginate(10);
+
         // dump and die poure debuguer le contenu d'une variable
         // dd($produits);
-// on passe la data a notre view (page)
-        return view('produits.index',compact('produits'));
+        // on passe la data a notre view (page)
+        return view('produits.index', compact('produits'));
 
     }
 
@@ -36,18 +37,14 @@ class ProduitController extends Controller
     public function store(Request $request)
     {
         // validation
-        $data=$request->validate([
-            'libelle'=>['required', 'string','max:12'],
-            'price'=>['required','numeric', 'min:0']
+        $data = $request->validate([
+            'libelle' => ['required', 'string', 'max:12'],
+            'price' => ['required', 'numeric', 'min:0'],
 
         ]);
         Produit::create($data);
 
-        //recuperer les donnees du formulair
-        // $data=$request->all();
-        // save les donnees dans la table Produit
-        // Produit::($data);
-        // retourne sur la page index
+
         return redirect()->route('produits.index');
 
     }
@@ -82,5 +79,8 @@ class ProduitController extends Controller
     public function destroy(string $id)
     {
         //
+        $produit=Produit::findOrFail($id);
+        $produit->delete();
+        return redirect()->route('produits.index')->with('success','Produit supprime avec succes');
     }
 }
